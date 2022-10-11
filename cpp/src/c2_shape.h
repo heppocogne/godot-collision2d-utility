@@ -16,8 +16,18 @@
         {
             GODOT_CLASS(C2Shape,Reference)
 
-            c2x _tf_c2x;
-            C2_TYPE _c2_shape_type;
+
+            bool _tf_dirty;
+            bool _shape_dirty;
+
+            void _update_tf();
+            void _update_shape();
+        public:
+            Transform2D transform;
+            Ref<Shape2D> shape;
+
+            c2x tf_c2x;
+            C2_TYPE c2_shape_type;
             union
             {
                 c2Circle circle;
@@ -26,15 +36,6 @@
                 c2Poly poly;
                 c2Ray ray;
             };
-            bool _tf_dirty;
-            bool _shape_dirty;
-
-            void _update_tf();
-            void _update_shape();
-
-        public:
-            Transform2D transform;
-            Ref<Shape2D> shape;
 
             static void _register_methods();
 
@@ -42,13 +43,15 @@
 
             void _init();
 
-            bool contains_point(Vector2 point)const;
-            bool is_collided(Ref<C2Shape> other)const;
-            Ref<C2Manifold> is_collided_manifold(Ref<C2Shape> other)const;
+            bool contains_point(Vector2 point);
+            bool is_collided(Ref<C2Shape> other);
+            Ref<C2Manifold> is_collided_manifold(Ref<C2Shape> other);
             void set_transform(Transform2D p_transform2d);
             Transform2D get_transform()const{return transform;}
             void set_shape(Ref<Shape2D> p_shape);
             Ref<Shape2D> get_shape()const{return shape;}
+
+            void prepare();
         };
     };
 

@@ -15,6 +15,7 @@ void C2Shape::_register_methods()
     register_property<C2Shape,Ref<Shape2D>>("shape",&C2Shape::set_shape,&C2Shape::get_shape,nullptr);
     register_method("set_shape",&C2Shape::set_shape);
     register_method("get_shape",&C2Shape::get_shape);
+    register_method("is_collided",&C2Shape::is_collided);
 }
 
 
@@ -56,7 +57,7 @@ void C2Shape::_update_tf()
         Transform2D no_scaled=Transform2D::IDENTITY;
         no_scaled.set_origin(transform.get_origin());
         no_scaled.set_rotation(transform.get_rotation());
-        _tf_c2x=Transform2D_to_c2x(no_scaled);
+        tf_c2x=Transform2D_to_c2x(no_scaled);
 
         _tf_dirty=false;
     }
@@ -94,7 +95,7 @@ void C2Shape::_update_shape()
         if(godot_shape_type=="CircleShape2D")
         {
             Ref<CircleShape2D> circle_shape=shape;
-            _c2_shape_type=C2_TYPE_CIRCLE;
+            c2_shape_type=C2_TYPE_CIRCLE;
             circle.p=Vector2_to_c2v(transform.get_origin());
             if(scale.x!=scale.y)
                 Godot::print_warning("scale.x and scale.y should be same (scale.y is discarded)",__func__,__FILE__,__LINE__);
@@ -106,10 +107,10 @@ void C2Shape::_update_shape()
             if(points.size()>C2_MAX_POLYGON_VERTS)
             {
                 Godot::print_error(String("The number of vertices is limited to ")+Variant(C2_MAX_POLYGON_VERTS),__func__,__FILE__,__LINE__);
-                _c2_shape_type=C2_TYPE_NONE;
+                c2_shape_type=C2_TYPE_NONE;
                 return;
             }
-            _c2_shape_type=C2_TYPE_POLY;
+            c2_shape_type=C2_TYPE_POLY;
 
             poly.count=points.size();
             for(int i=0;i<poly.count;i++)
@@ -120,7 +121,7 @@ void C2Shape::_update_shape()
         }else if(godot_shape_type=="RectangleShape2D")
         {
             Ref<RectangleShape2D> rect_shape=shape;
-            _c2_shape_type=C2_TYPE_POLY;
+            c2_shape_type=C2_TYPE_POLY;
             poly.count=4;
             Vector2 ext_scaled=scale*rect_shape->get_extents();
             poly.verts[0]=Vector2_to_c2v(-ext_scaled);
@@ -131,11 +132,52 @@ void C2Shape::_update_shape()
         }else
         {
             Godot::print_error(shape->get_class()+String(" is not supported"),__func__,__FILE__,__LINE__);
-            _c2_shape_type=C2_TYPE_NONE;
+            c2_shape_type=C2_TYPE_NONE;
             return;
         }
 
         _shape_dirty=false;
     }
     return;
+}
+
+
+void C2Shape::prepare()
+{
+    _update_tf();
+    _update_shape();
+}
+
+
+bool C2Shape::is_collided(Ref<C2Shape> other)
+{
+    prepare();
+    other->prepare();
+
+    switch(c2_shape_type)
+    {
+        case C2_TYPE_POLY:
+            switch (other->c2_shape_type)
+            {
+            case C2_TYPE_POLY:
+                return c2PolytoPoly(&poly,&tf_c2x,&other->poly,&other->tf_c2x);
+            case C2_TYPE_CIRCLE:
+                return c2CircletoPoly(other->circle,&poly,&tf_c2x);
+            default:
+                return false;
+            }
+            break;
+        case C2_TYPE_CIRCLE:
+            switch (other->c2_shape_type)
+            {
+            case C2_TYPE_POLY:
+                return c2CircletoPoly(circle,&other->poly,&other->tf_c2x);
+            case C2_TYPE_CIRCLE:
+                return c2CircletoCircle(circle,other->circle);
+            default:
+                return false;
+            }
+        default:
+            return false;
+    }
 }
