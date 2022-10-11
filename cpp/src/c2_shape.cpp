@@ -2,10 +2,23 @@
 #include <CircleShape2D.hpp>
 #include <ConvexPolygonShape2D.hpp>
 #include <RectangleShape2D.hpp>
+#include <Plane.hpp>
+#include <Vector3.hpp>
 
 #include "c2_convert.h"
 
 using namespace godot;
+
+template<typename number_type>
+int signof(const number_type value)
+{
+    if(value==0)
+        return 0;
+    else if(value<0)
+        return -1;
+    else
+        return 1;
+}
 
 void C2Shape::_register_methods()
 {
@@ -17,6 +30,7 @@ void C2Shape::_register_methods()
     register_method("get_shape",&C2Shape::get_shape);
     register_method("set_points",&C2Shape::set_points);
     register_method("is_collided",&C2Shape::is_collided);
+    register_method("contains_point",&C2Shape::contains_point);
 }
 
 
@@ -188,6 +202,41 @@ bool C2Shape::is_collided(Ref<C2Shape> other)
             default:
                 return false;
             }
+        default:
+            return false;
+    }
+}
+
+
+bool C2Shape::contains_point(Vector2 point,bool include_border)
+{
+    prepare();
+    switch(c2_shape_type)
+    {
+        case C2_TYPE_POLY:
+        {
+            const Vector3 point_v3(point.x,point.y,0.0);
+            //[count(-1),count(0),count(1)]
+            int signs_count[3]={0,0,0};
+            for(int i=0;i<poly.count;i++)
+            {
+                const Vector2 v=transform.xform(c2v_to_Vector2(poly.verts[i]));
+                const Vector2 n=Vector2(poly.norms[i].x,poly.norms[i].y).rotated(transform.get_rotation());
+                Plane p(Vector3(v.x,v.y,0.0),Vector3(n.x,n.y,0.0));
+                signs_count[signof(p.distance_to(point_v3))+1]+=1;
+            }
+            if(include_border)
+                //count(-1)+count(0)==poly.count or count(0)+count(1)==poly.count
+                return (signs_count[0]+signs_count[1]==poly.count) || (signs_count[1]+signs_count[2]==poly.count);
+            else
+                //count(0)==0 and (count(-1)==poly.count or count(1)==poly.count)
+                return signs_count[1]==0 && (signs_count[0]==poly.count || signs_count[2]==poly.count);
+        }
+        case C2_TYPE_CIRCLE:
+            if(include_border)
+                return point.distance_to(c2v_to_Vector2(circle.p))<=circle.r;
+            else
+                return point.distance_to(c2v_to_Vector2(circle.p))<circle.r;
         default:
             return false;
     }

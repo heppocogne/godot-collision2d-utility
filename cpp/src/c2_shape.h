@@ -43,7 +43,7 @@
 
             void _init();
 
-            bool contains_point(Vector2 point);
+            bool contains_point(Vector2 point,bool include_border=false);
             bool is_collided(Ref<C2Shape> other);
             Ref<C2Manifold> is_collided_manifold(Ref<C2Shape> other);
             void set_transform(Transform2D p_transform2d);
