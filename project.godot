@@ -9,7 +9,7 @@
 config_version=4
 
 _global_script_classes=[ {
-"base": "",
+"base": "Reference",
 "class": "C2Shape",
 "language": "NativeScript",
 "path": "res://addons/collision2d_utility/c2_shape.gdns"

@@ -35,12 +35,24 @@ margin_right = 40.0
 margin_bottom = 40.0
 
 [node name="CollidePolygon" type="Label" parent="VBoxContainer"]
-margin_right = 54.0
+margin_right = 153.0
 margin_bottom = 14.0
 text = "polygon:"
 
-[node name="CollideCircle" type="Label" parent="VBoxContainer"]
+[node name="PolygonContains" type="Label" parent="VBoxContainer"]
 margin_top = 18.0
-margin_right = 54.0
+margin_right = 153.0
 margin_bottom = 32.0
+text = "polygon_contains_point:"
+
+[node name="CollideCircle" type="Label" parent="VBoxContainer"]
+margin_top = 36.0
+margin_right = 153.0
+margin_bottom = 50.0
 text = "circle:"
+
+[node name="CircleContains" type="Label" parent="VBoxContainer"]
+margin_top = 54.0
+margin_right = 153.0
+margin_bottom = 68.0
+text = "circle_contains_point:"

@@ -15,5 +15,7 @@ func _ready():
 
 func _process(_delta:float):
 	c2_cursor.transform=$Cursor.transform
-	$VBoxContainer/CollidePolygon.text="poligon:"+str(c2_polygon.is_collided(c2_cursor))
+	$VBoxContainer/CollidePolygon.text="polygon:"+str(c2_polygon.is_collided(c2_cursor))
+	$VBoxContainer/PolygonContains.text="polygon_contains_point:"+str(c2_polygon.contains_point(get_local_mouse_position(),true))
 	$VBoxContainer/CollideCircle.text="circle:"+str(c2_circle.is_collided(c2_cursor))
+	$VBoxContainer/CircleContains.text="circle_contains_point:"+str(c2_circle.contains_point(get_local_mouse_position(),true))
