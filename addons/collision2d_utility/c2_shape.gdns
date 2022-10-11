@@ -1,0 +1,9 @@
+[gd_resource type="NativeScript" load_steps=2 format=2]
+
+[ext_resource path="res://addons/collision2d_utility/collision2d_utility_library.tres" type="GDNativeLibrary" id=1]
+
+[resource]
+resource_name = "C2Shape"
+class_name = "C2Shape"
+library = ExtResource( 1 )
+script_class_name = "C2Shape"

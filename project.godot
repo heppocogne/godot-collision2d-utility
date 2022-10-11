@@ -8,10 +8,24 @@
 
 config_version=4
 
+_global_script_classes=[ {
+"base": "",
+"class": "C2Shape",
+"language": "NativeScript",
+"path": "res://addons/collision2d_utility/c2_shape.gdns"
+} ]
+_global_script_class_icons={
+"C2Shape": ""
+}
+
 [application]
 
 config/name="godot-polygon2d-collision-utility"
 config/icon="res://icon.png"
+
+[editor_plugins]
+
+enabled=PoolStringArray( "res://addons/collision2d_utility/plugin.cfg" )
 
 [gui]
 
