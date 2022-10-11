@@ -15,6 +15,7 @@ void C2Shape::_register_methods()
     register_property<C2Shape,Ref<Shape2D>>("shape",&C2Shape::set_shape,&C2Shape::get_shape,nullptr);
     register_method("set_shape",&C2Shape::set_shape);
     register_method("get_shape",&C2Shape::get_shape);
+    register_method("set_points",&C2Shape::set_points);
     register_method("is_collided",&C2Shape::is_collided);
 }
 
@@ -46,6 +47,16 @@ void C2Shape::set_transform(Transform2D p_transform2d)
 void C2Shape::set_shape(Ref<Shape2D> p_shape)
 {
     shape=p_shape;
+    _shape_dirty=true;
+}
+
+
+void C2Shape::set_points(PoolVector2Array points)
+{
+    Ref<ConvexPolygonShape2D> poly_shape=ConvexPolygonShape2D::_new();
+    poly_shape->set_point_cloud(points);
+    shape=poly_shape;
+    
     _shape_dirty=true;
 }
 

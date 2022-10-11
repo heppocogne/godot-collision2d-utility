@@ -50,6 +50,7 @@
             Transform2D get_transform()const{return transform;}
             void set_shape(Ref<Shape2D> p_shape);
             Ref<Shape2D> get_shape()const{return shape;}
+            void set_points(PoolVector2Array points);
 
             void prepare();
         };
