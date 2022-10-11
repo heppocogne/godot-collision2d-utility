@@ -4,17 +4,51 @@
     #include <Godot.hpp>
     #include <Reference.hpp>
     #include <Ref.hpp>
+    #include <Transform2D.hpp>
+    #include <Shape2D.hpp>
+    #include <String.hpp>
+
+    #include "c2_manifold.h"
 
     namespace godot
     {
         class C2Shape:public Reference
         {
             GODOT_CLASS(C2Shape,Reference)
-        public:
-            C2Shape();
-            ~C2Shape();
 
-            bool colide(Ref<C2Shape> other)const;
+            c2x _tf_c2x;
+            C2_TYPE _c2_shape_type;
+            union
+            {
+                c2Circle circle;
+                c2AABB aabb;
+                c2Capsule capsule;
+                c2Poly poly;
+                c2Ray ray;
+            };
+            bool _tf_dirty;
+            bool _shape_dirty;
+
+            void _update_tf();
+            void _update_shape();
+
+        public:
+            Transform2D transform;
+            Ref<Shape2D> shape;
+
+            static void _register_methods();
+
+            C2Shape();
+
+            void _init();
+
+            bool contains_point(Vector2 point)const;
+            bool is_collided(Ref<C2Shape> other)const;
+            Ref<C2Manifold> is_collided_manifold(Ref<C2Shape> other)const;
+            void set_transform(Transform2D p_transform2d);
+            Transform2D get_transform()const{return transform;}
+            void set_shape(Ref<Shape2D> p_shape);
+            Ref<Shape2D> get_shape()const{return shape;}
         };
     };
 
