@@ -1,5 +1,5 @@
-#ifndef C2_MANIFOLD_H
-    #define C2_MANIFOLD_H
+#ifndef C2manifold_H
+    #define C2manifold_H
 
     #include <Godot.hpp>
     #include <Reference.hpp>
@@ -17,29 +17,29 @@
         class C2Manifold:public Reference
         {
             GODOT_CLASS(C2Manifold,Reference)
-
-            c2Manifold _manifold;
         public:
+            c2Manifold manifold;
+
             static void _register_methods();
 
             int get_count()const
             {
-                return _manifold.count;
+                return manifold.count;
             }
 
             PoolRealArray get_depthes()const
             {
-                return Array::make(_manifold.depths[0],_manifold.depths[1]);
+                return Array::make(manifold.depths[0],manifold.depths[1]);
             }
 
             PoolVector2Array get_contact_points()const
             {
-                return Array::make(c2v_to_Vector2(_manifold.contact_points[0]),c2v_to_Vector2(_manifold.contact_points[1]));
+                return Array::make(c2v_to_Vector2(manifold.contact_points[0]),c2v_to_Vector2(manifold.contact_points[1]));
             }
 
             Vector2 get_normal()const
             {
-                return c2v_to_Vector2(_manifold.n);
+                return c2v_to_Vector2(manifold.n);
             }
         };
     };

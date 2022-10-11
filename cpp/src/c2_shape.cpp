@@ -31,6 +31,7 @@ void C2Shape::_register_methods()
     register_method("set_points",&C2Shape::set_points);
     register_method("is_collided",&C2Shape::is_collided);
     register_method("contains_point",&C2Shape::contains_point);
+    register_method("is_collided_manifold",&C2Shape::is_collided_manifold);
 }
 
 
@@ -239,5 +240,44 @@ bool C2Shape::contains_point(Vector2 point,bool include_border)
                 return point.distance_to(c2v_to_Vector2(circle.p))<circle.r;
         default:
             return false;
+    }
+}
+
+
+Ref<C2Manifold> C2Shape::is_collided_manifold(Ref<C2Shape> other)
+{
+    prepare();
+    other->prepare();
+    Ref<C2Manifold> m=C2Manifold::_new();
+
+    switch(c2_shape_type)
+    {
+        case C2_TYPE_POLY:
+            switch (other->c2_shape_type)
+            {
+            case C2_TYPE_POLY:
+                c2PolytoPolyManifold(&poly,&tf_c2x,&other->poly,&other->tf_c2x,&m->manifold);
+                return m;
+            case C2_TYPE_CIRCLE:
+                c2CircletoPolyManifold(other->circle,&poly,&tf_c2x,&m->manifold);
+                return m;
+            default:
+                return nullptr;
+            }
+            break;
+        case C2_TYPE_CIRCLE:
+            switch (other->c2_shape_type)
+            {
+            case C2_TYPE_POLY:
+                c2CircletoPolyManifold(circle,&other->poly,&other->tf_c2x,&m->manifold);
+                return m;
+            case C2_TYPE_CIRCLE:
+                c2CircletoCircleManifold(circle,other->circle,&m->manifold);
+                return m;
+            default:
+                return nullptr;
+            }
+        default:
+            return nullptr;
     }
 }
