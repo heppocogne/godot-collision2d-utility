@@ -45,14 +45,24 @@ margin_right = 153.0
 margin_bottom = 32.0
 text = "polygon_contains_point:"
 
-[node name="CollideCircle" type="Label" parent="VBoxContainer"]
+[node name="PolygonManifold" type="Label" parent="VBoxContainer"]
 margin_top = 36.0
 margin_right = 153.0
 margin_bottom = 50.0
-text = "circle:"
 
-[node name="CircleContains" type="Label" parent="VBoxContainer"]
+[node name="CollideCircle" type="Label" parent="VBoxContainer"]
 margin_top = 54.0
 margin_right = 153.0
 margin_bottom = 68.0
+text = "circle:"
+
+[node name="CircleContains" type="Label" parent="VBoxContainer"]
+margin_top = 72.0
+margin_right = 153.0
+margin_bottom = 86.0
 text = "circle_contains_point:"
+
+[node name="CircleManifold" type="Label" parent="VBoxContainer"]
+margin_top = 90.0
+margin_right = 153.0
+margin_bottom = 104.0
