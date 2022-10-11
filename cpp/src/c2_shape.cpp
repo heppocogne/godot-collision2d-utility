@@ -245,11 +245,11 @@ bool C2Shape::contains_point(Vector2 point,bool include_border)
 }
 
 
-Ref<C2Manifold> C2Shape::is_collided_manifold(Ref<C2Shape> other)
+Dictionary C2Shape::is_collided_manifold(Ref<C2Shape> other)
 {
     prepare();
     other->prepare();
-    Ref<C2Manifold> ref_m=C2Manifold::_new();
+    c2Manifold m;
 
     switch(c2_shape_type)
     {
@@ -257,28 +257,28 @@ Ref<C2Manifold> C2Shape::is_collided_manifold(Ref<C2Shape> other)
             switch (other->c2_shape_type)
             {
             case C2_TYPE_POLY:
-                c2PolytoPolyManifold(&poly,&tf_c2x,&other->poly,&other->tf_c2x,&ref_m->manifold);
-                return ref_m;
+                c2PolytoPolyManifold(&poly,&tf_c2x,&other->poly,&other->tf_c2x,&m);
+                return c2Manifold_to_Dictionary(m);
             case C2_TYPE_CIRCLE:
-                c2CircletoPolyManifold(other->circle,&poly,&tf_c2x,&ref_m->manifold);
-                return ref_m;
+                c2CircletoPolyManifold(other->circle,&poly,&tf_c2x,&m);
+                return c2Manifold_to_Dictionary(m);
             default:
-                return nullptr;
+                return Dictionary();
             }
             break;
         case C2_TYPE_CIRCLE:
             switch (other->c2_shape_type)
             {
             case C2_TYPE_POLY:
-                c2CircletoPolyManifold(circle,&other->poly,&other->tf_c2x,&ref_m->manifold);
-                return ref_m;
+                c2CircletoPolyManifold(circle,&other->poly,&other->tf_c2x,&m);
+                return c2Manifold_to_Dictionary(m);
             case C2_TYPE_CIRCLE:
-                c2CircletoCircleManifold(circle,other->circle,&ref_m->manifold);
-                return ref_m;
+                c2CircletoCircleManifold(circle,other->circle,&m);
+                return c2Manifold_to_Dictionary(m);
             default:
-                return nullptr;
+                return Dictionary();
             }
         default:
-            return nullptr;
+            return Dictionary();
     }
 }

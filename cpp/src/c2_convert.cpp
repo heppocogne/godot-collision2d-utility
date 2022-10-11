@@ -1,5 +1,8 @@
 #include "c2_convert.h"
 
+#include <Array.hpp>
+#include <PoolArrays.hpp>
+
 #include <cmath>
 
 namespace godot
@@ -30,5 +33,23 @@ namespace godot
     {
         const auto r=tf.get_rotation();
         return {Vector2_to_c2v(tf.get_origin()),c2r{cos(r),sin(r)}};
+    }
+
+
+    Dictionary c2Manifold_to_Dictionary(const c2Manifold& m)
+    {
+        Dictionary result;
+        result["count"]=m.count;
+        PoolRealArray depths;
+        depths.append(m.depths[0]);
+        depths.append(m.depths[1]);
+        result["depths"]=depths;
+        PoolVector2Array contact_points;
+        contact_points.append(c2v_to_Vector2(m.contact_points[0]));
+        contact_points.append(c2v_to_Vector2(m.contact_points[1]));
+        result["contact_points"]=contact_points;
+        result["normal"]=c2v_to_Vector2(m.n);
+
+        return result;
     }
 };

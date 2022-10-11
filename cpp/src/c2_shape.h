@@ -8,7 +8,9 @@
     #include <Shape2D.hpp>
     #include <String.hpp>
 
-    #include "c2_manifold.h"
+    #include "cute_c2.h"
+
+    //#include "c2_manifold.h"
 
     namespace godot
     {
@@ -44,7 +46,7 @@
 
             bool is_collided(Ref<C2Shape> other);
             bool contains_point(Vector2 point,bool include_border=false);
-            Ref<C2Manifold> is_collided_manifold(Ref<C2Shape> other);
+            Dictionary is_collided_manifold(Ref<C2Shape> other);
             void set_transform(Transform2D p_transform2d);
             Transform2D get_transform()const{return transform;}
             void set_shape(Ref<Shape2D> p_shape);
