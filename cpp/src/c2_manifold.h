@@ -22,6 +22,8 @@
 
             static void _register_methods();
 
+            void _init(){}
+
             int get_count()const
             {
                 return manifold.count;

@@ -22,6 +22,7 @@ int signof(const number_type value)
 
 void C2Shape::_register_methods()
 {
+    register_method("_init",&C2Shape::_init);
     register_property<C2Shape,Transform2D>("transform",&C2Shape::set_transform,&C2Shape::get_transform,Transform2D::IDENTITY);
     register_method("set_transform",&C2Shape::set_transform);
     register_method("get_transform",&C2Shape::get_transform);
@@ -248,7 +249,7 @@ Ref<C2Manifold> C2Shape::is_collided_manifold(Ref<C2Shape> other)
 {
     prepare();
     other->prepare();
-    Ref<C2Manifold> m=C2Manifold::_new();
+    Ref<C2Manifold> ref_m=C2Manifold::_new();
 
     switch(c2_shape_type)
     {
@@ -256,11 +257,11 @@ Ref<C2Manifold> C2Shape::is_collided_manifold(Ref<C2Shape> other)
             switch (other->c2_shape_type)
             {
             case C2_TYPE_POLY:
-                c2PolytoPolyManifold(&poly,&tf_c2x,&other->poly,&other->tf_c2x,&m->manifold);
-                return m;
+                c2PolytoPolyManifold(&poly,&tf_c2x,&other->poly,&other->tf_c2x,&ref_m->manifold);
+                return ref_m;
             case C2_TYPE_CIRCLE:
-                c2CircletoPolyManifold(other->circle,&poly,&tf_c2x,&m->manifold);
-                return m;
+                c2CircletoPolyManifold(other->circle,&poly,&tf_c2x,&ref_m->manifold);
+                return ref_m;
             default:
                 return nullptr;
             }
@@ -269,11 +270,11 @@ Ref<C2Manifold> C2Shape::is_collided_manifold(Ref<C2Shape> other)
             switch (other->c2_shape_type)
             {
             case C2_TYPE_POLY:
-                c2CircletoPolyManifold(circle,&other->poly,&other->tf_c2x,&m->manifold);
-                return m;
+                c2CircletoPolyManifold(circle,&other->poly,&other->tf_c2x,&ref_m->manifold);
+                return ref_m;
             case C2_TYPE_CIRCLE:
-                c2CircletoCircleManifold(circle,other->circle,&m->manifold);
-                return m;
+                c2CircletoCircleManifold(circle,other->circle,&ref_m->manifold);
+                return ref_m;
             default:
                 return nullptr;
             }

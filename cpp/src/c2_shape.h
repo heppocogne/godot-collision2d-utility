@@ -16,7 +16,6 @@
         {
             GODOT_CLASS(C2Shape,Reference)
 
-
             bool _tf_dirty;
             bool _shape_dirty;
 
@@ -31,10 +30,10 @@
             union
             {
                 c2Circle circle;
-                c2AABB aabb;
-                c2Capsule capsule;
+                //c2AABB aabb;
+                //c2Capsule capsule;
                 c2Poly poly;
-                c2Ray ray;
+                //c2Ray ray;
             };
 
             static void _register_methods();
